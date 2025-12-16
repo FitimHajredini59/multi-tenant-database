@@ -1,0 +1,134 @@
+Enum tenant_status {
+  active
+  pending
+  inactive
+}
+
+Table tenants {
+  id integer [primary key]
+  domain varchar [unique]
+  status tenant_status [default: 'active']
+  created_at timestamp [default: `now()`]
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table users {
+  id integer [primary key]
+  tenant_id integer [not null]
+  role_id integer [not null]
+  name varchar
+  email varchar
+  password varchar
+  created_at timestamp [default: `now()`]
+  updated_at timestamp
+  deleted_at timestamp
+
+  Indexes {
+    (tenant_id, email) [unique]
+  }
+}
+
+Table roles {
+  id integer [primary key]
+  name varchar [not null, unique]
+}
+
+Table permissions {
+  id integer [primary key]
+  name varchar [not null, unique]
+}
+
+Table role_permissions {
+  role_id integer [not null]
+  permission_id integer [not null]
+
+  Indexes {
+    (role_id, permission_id) [unique]
+  }
+}
+
+Table pages {
+  id integer [primary key]
+  tenant_id integer [not null]
+  slug varchar [not null]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp
+
+  Indexes {
+    (tenant_id, slug) [unique]
+  }
+}
+
+Table page_sections {
+  id integer [primary key]
+  page_id integer [not null]
+  content text
+  metadata jsonb
+  created_at timestamp [default: `now()`]
+  updated_at timestamp
+}
+
+Table page_files {
+  id integer [primary key]
+  tenant_id integer
+  page_id integer
+  path varchar
+  metadata jsonb
+  created_at timestamp [default: `now()`]
+  updated_at timestamp
+}
+
+Table forms {
+  id integer [primary key]
+  tenant_id integer
+  page_id integer
+  title varchar
+  slug varchar [note: "Enables embedding a form in multiple pages"]
+  metadata jsonb
+  created_at timestamp [default: `now()`]
+  updated_at timestamp
+
+  indexes {
+    (tenant_id, slug) [unique]
+  }
+}
+
+Table questions {
+  id integer [primary key]
+  form_id integer
+  is_required bool
+  value varchar [note: "The actual question"]
+  order integer
+  metadata jsonb
+  created_at timestamp [default: `now()`]
+  updated_at timestamp
+}
+
+Table answers {
+  id integer [primary key]
+  user_id integer
+  question_id integer
+  value varchar
+  metadata jsonb
+  created_at timestamp [default: `now()`]
+  updated_at timestamp
+
+  Indexes {
+    (user_id, question_id) [unique]
+  }
+}
+
+Ref: tenants.id < users.tenant_id
+Ref: roles.id < users.role_id
+Ref: role_permissions.role_id > roles.id
+Ref: role_permissions.permission_id > permissions.id
+Ref: tenants.id < pages.tenant_id
+Ref: pages.id < page_sections.page_id
+Ref: page_files.tenant_id > tenants.id
+Ref: page_files.page_id > pages.id
+Ref: forms.tenant_id > tenants.id
+Ref: forms.page_id > pages.id
+Ref: questions.form_id > forms.id
+Ref: answers.user_id > users.id
+Ref: answers.question_id > questions.id
