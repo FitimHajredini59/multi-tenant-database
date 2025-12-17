@@ -1,31 +1,29 @@
-\# Multi-Tenant Backend Database Schema
+# Multi-Tenant Backend Database Schema
+
+This repository contains a PostgreSQL database schema designed for a multi-tenant healthcare and e-commerce platform. The schema supports multiple tenants (brands) within a single database, with strict tenant isolation enforced at the database level.
 
 
 
-This repository contains a PostgreSQL database schema designed for a multi-tenant healthcare \& e-commerce platform. The schema supports multiple tenants (brands) within a single database, with strict tenant isolation enforced at the database level.
+## Main Domains Covered
 
-
-
-\## Main Domains Covered
-
-\### CMS / Content
+### CMS / Content
 
 * Pages and page sections for tenant-specific landing pages
 * Media/file associations
 * Slug-based routing (domain handled at tenant level)
 
-\### Forms \& Questionnaires
+### Forms \& Questionnaires
 
 * Reusable, tenant-scoped forms
 * Form submissions separated from answers
 * Support for multiple submissions per user
 
-\### Healthcare
+### Healthcare
 
 * Patients linked to tenant-scoped users
 * Consultations and prescriptions with correct lifecycle modeling
 
-\### E-Commerce
+### E-Commerce
 
 * Products, categories, and product categorization
 * Orders, order items, payments
@@ -33,19 +31,17 @@ This repository contains a PostgreSQL database schema designed for a multi-tenan
 
 
 
-\## Running the Schema
+## Running the Schema
 
-\### Requirements
+### Requirements
 
 * PostgreSQL 14+
 * psql
 
-\### Apply migrations
+### Apply migrations
 
 ```
-
 psql "$DATABASE\_URL" -f dbdiagram\_docs/db\_design.sql
-
 ```
 
 Migrations are ordered to respect table dependencies.
@@ -54,7 +50,7 @@ Migrations are ordered to respect table dependencies.
 
 
 
-\## Notes \& Tradeoffs
+## Notes \& Tradeoffs
 
 * The schema favors explicit relational integrity over application-level guarantees.
 * Address data is snapshotted in shipping records to preserve historical accuracy.
