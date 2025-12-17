@@ -41,7 +41,7 @@ This repository contains a PostgreSQL database schema designed for a multi-tenan
 ### Apply migrations
 
 ```
-psql "$DATABASE\_URL" -f dbdiagram\_docs/db\_design.sql
+psql "$DATABASE\_URL" -f dbdiagram_docs/db_design.sql
 ```
 
 Migrations are ordered to respect table dependencies.
