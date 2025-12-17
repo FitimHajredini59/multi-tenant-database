@@ -129,6 +129,10 @@ Table page_files {
   metadata jsonb
   created_at timestamp [default: `now()`]
   updated_at timestamp
+  
+  indexes {
+    (tenant_id, id) [unique]
+  }
 }
 
 Table forms {
@@ -264,12 +268,13 @@ Table categories {
   id integer [primary key, increment]
   tenant_id integer [not null]
   parent_id integer
-  name varchar
+  name varchar [not null]
   slug varchar [not null]
   description text
 
   indexes {
     (tenant_id, id) [unique]
+    (tenant_id, name) [unique]
     (tenant_id, slug) [unique]
   }
 }
@@ -359,6 +364,10 @@ Table payments {
   transaction_id varchar [note: "Foreign transaction ID from a third party service"]
   created_at timestamp [default: `now()`]
   updated_at timestamp
+
+  indexes {
+    (tenant_id, id) [unique]
+  }
 }
 
 Ref: tenants.id < users.tenant_id
